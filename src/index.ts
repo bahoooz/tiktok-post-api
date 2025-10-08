@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 4000;
+const baseUrl = process.env.API_URL
 
 import videoRoutes from "./video/video.routes.js";
 import promptRoutes from "./prompt/prompt.routes.js";
@@ -26,5 +27,5 @@ app.use("/video", videoRoutes);
 app.use("/prompt", promptRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Server is running at ${baseUrl}`);
 });
