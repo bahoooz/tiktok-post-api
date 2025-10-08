@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Video {
+  id          Int      @id @default(autoincrement())
+  type        String   @default("tiktok")
+  operationId String   @unique
+  done        Boolean @default(false)
+  isPosted    Boolean? @default(false)
+  prompt      String
+  uri         String?
+  createdAt   DateTime @default(now())
+}
