@@ -130,3 +130,16 @@ export const getStatusVideo = async (req: Request, res: Response) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const getAllVideos = async (_req: Request, res: Response) => {
+  try {
+    const videos = await prisma.video.findMany();
+
+    if (videos.length === 0)
+      return res.status(404).json({ message: "No videos found" });
+
+    return res.status(200).json(videos);
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+};
