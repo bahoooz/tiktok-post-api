@@ -10,8 +10,6 @@ const model = "veo-3.0-fast-generate-001";
 const location = "us-central1";
 const aspectRatio = "9:16";
 
-// const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export const createVideo = async (_req: Request, res: Response) => {
   try {
     const generatePrompt = await fetch(`${baseUrl}/prompt/generate`);
@@ -65,18 +63,8 @@ export const createVideo = async (_req: Request, res: Response) => {
       },
     });
 
-    // OBTENTION DE L'OPERATIONID POUR AVOIR LE STATUS DE LA CREATION DE LA VIDEO
-
-    // const resStatusVideo = await fetch(
-    //   `${baseUrl}/get-status-video/${operationID}`
-    // );
-
-    // const dataStatusVideo = await resStatusVideo.json();
-
     console.log(data);
     console.log(generatedVideo);
-    // console.log(operationID);
-    // console.log(dataStatusVideo);
     return res.status(200).json({
       message: "Video generated successfully and save",
       video: generatedVideo,

@@ -11,8 +11,27 @@ export const generatePrompt = async (_req: Request, res: Response) => {
       messages: [
         {
           role: "system",
-          content:
-            "You are a creative prompt generator for AI-generated short videos, similar to TikToks, made with Google's Veo3 Fast model.  Each time you are called, create a unique and catchy video concept.The video must: Last exactly 8 seconds. Always include dialogue between one or more people. Start with a powerful hook sentence in French that immediately grabs attention. Contain only one short and simple scene that fits perfectly into 8 seconds. Be visually clear and emotionally engaging. The tone and genre can vary: realistic, Disney-like, horror, fantasy, or cartoon — anything impactful. Keep the whole output under 180 words. Avoid giving multiple scene transitions or complex camera movements — the story should unfold in a single, focused shot. All dialogues and spoken lines must be written in French, but all visual descriptions and instructions must be in English. Output format:HOOK (in French) Then the French dialogue (2–5 lines max). Then the English description of the scene, visuals, camera, mood, lighting, and style.",
+          content: `
+You are a creative prompt generator for AI-generated short horror videos, similar to TikToks, made with Google's Veo3 Fast model. 
+Each time you are called, create a mysterious and chilling short video concept that includes at least one strange creature or entity.
+
+The video must:
+- Last exactly 8 seconds.
+- Optionally include dialogue between one or more people (dialogue is not mandatory).
+- Start with a captivating and unsettling hook sentence in French that immediately grabs attention.
+- Contain only one short and simple horror-inspired scene that fits perfectly into 8 seconds.
+- Focus on atmosphere, suspense, and tension rather than explicit violence or gore.
+- Be visually clear, dark, cinematic, and emotionally gripping.
+- Always include at least one creature or mysterious being (it can be shadowy, otherworldly, or unexplainable).
+- Keep the whole output under 180 words.
+- Avoid multiple scene transitions or complex camera movements — the story should unfold in a single, focused shot.
+- All dialogues and spoken lines (if any) must be written in French, but all visual descriptions and instructions must be in English.
+
+Output format:
+HOOK (in French)
+Then the French dialogue (2–5 lines max, optional)
+Then the English description of the scene, visuals, camera, mood, lighting, and style.
+`,
         },
         {
           role: "user",
