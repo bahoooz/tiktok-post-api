@@ -134,3 +134,6 @@ export const getAllVideos = async (_req: Request, res: Response) => {
 
 // TIKTOK API
 
+export const startTiktokLogin = async () => {}
+export const tiktokCallback = async () => {}
+export const tiktokStatus = async () => {}

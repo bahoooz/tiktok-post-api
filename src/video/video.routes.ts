@@ -1,6 +1,6 @@
 import express from "express"
 
-import { createVideo, getAllVideos, getStatusVideo } from "./video.controller.js"
+import { createVideo, getAllVideos, getStatusVideo, startTiktokLogin, tiktokCallback, tiktokStatus } from "./video.controller.js"
 
 const router = express.Router()
 
