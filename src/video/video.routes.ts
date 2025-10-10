@@ -8,4 +8,8 @@ router.post("/generate", createVideo)
 router.get("/status/:operationId", getStatusVideo)
 router.get("/get", getAllVideos)
 
+router.get("/auth/tiktok/login", startTiktokLogin)
+router.get("/auth/tiktok/callback", tiktokCallback)
+router.get("/auth/tiktok/status", tiktokStatus)
+
 export default router;
