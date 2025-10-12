@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getAccessToken } from "../../utils.js";
 import { prisma } from "../lib/prisma.js";
 import { DataStatusVideo } from "../../types.js";
+import qs from "querystring";
 
 const baseUrl = process.env.API_URL;
 const bucketName = process.env.GCS_BUCKET;
@@ -134,6 +135,65 @@ export const getAllVideos = async (_req: Request, res: Response) => {
 
 // TIKTOK API
 
-export const startTiktokLogin = async () => {}
-export const tiktokCallback = async () => {}
-export const tiktokStatus = async () => {}
+const {
+  TIKTOK_CLIENT_KEY,
+  TIKTOK_CLIENT_SECRET,
+  TIKTOK_REDIRECT_URI,
+  TIKTOK_SCOPES,
+} = process.env;
+
+let accessToken: string | null = null;
+
+export const startTiktokLogin = async (_req: Request, res: Response) => {
+  const state = crypto.randomUUID();
+
+  const params = new URLSearchParams({
+    client_key: TIKTOK_CLIENT_KEY!,
+    scope: TIKTOK_SCOPES!,
+    response_type: "code",
+    redirect_uri: TIKTOK_REDIRECT_URI!,
+    state,
+  });
+
+  res.redirect(
+    `https://www.tiktok.com/v2/auth/authorize/?${params.toString()}`
+  );
+};
+export const tiktokCallback = async (req: Request, res: Response) => {
+  const code = req.query.code as string;
+  if (!code) return res.status(400).send("Missing code");
+
+  const body = qs.stringify({
+    client_key: TIKTOK_CLIENT_KEY!,
+    client_secret: TIKTOK_CLIENT_SECRET!,
+    code,
+    grant_type: "authorization_code",
+    redirect_uri: TIKTOK_REDIRECT_URI,
+  });
+
+  const response = await fetch("https://open.tiktokapis.com/v2/oauth/token/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    console.error("❌ TikTok token exchange failed:", data);
+    return res.status(500).json(data);
+  }
+
+  accessToken = data.access_token;
+  console.log("✅ TikTok token récupéré avec succès :", accessToken);
+
+  res.redirect("https://video.10banc.com/success-token");
+};
+export const tiktokStatus = async (_req: Request, res: Response) => {
+  res.json({
+    connected: !!accessToken,
+    accessToken: accessToken ? "stored" : null,
+  });
+};
