@@ -4,7 +4,8 @@ POST https://videoapi.10banc.com/video/tiktok/upload-draft
 Content-Type: application/json
 
 {
-    "videoUrl": "https://storage.googleapis.com/us_media_bucket/12532809227866320960/sample_0.mp4",
-    "caption": "Test very good tiktok",
-    "ai_generated": true
+    "source_info": {
+        "source": "PULL_FROM_URL",
+        "video_url": "https://storage.googleapis.com/us_media_bucket/12532809227866320960/sample_0.mp4"
+    }
 }

@@ -198,19 +198,14 @@ export const tiktokStatus = async (_req: Request, res: Response) => {
 
 type TiktokInitResponse = any;
 
-const authHeaders = (token: string) => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${token}`,
-});
-
 export const uploadDraftFromUrl = async (req: Request, res: Response) => {
   try {
     if (!accessToken)
       return res.status(401).json({ error: "Not connected to Tiktok" });
-    const { videoUrl, caption } = req.body ?? {};
+    const { videoUrl } = req.body ?? {};
     if (!videoUrl) return res.status(400).json({ error: "Missing videoUrl" });
 
-    const initResp = await fetch(
+    const r = await fetch(
       "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/",
       {
         method: "POST",
@@ -222,22 +217,29 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
         body: JSON.stringify({
           source_info: {
             source: "PULL_FROM_URL",
-            video_url: videoUrl
+            video_url: videoUrl,
           },
         }),
       }
     );
-
-    const initData: TiktokInitResponse = await initResp.json();
-    if (!initResp.ok) {
-      console.error("Tiktok draft init error :", initData);
-      return res.status(initResp.status).json(initData);
+    const ct = r.headers.get("content-type") || "";
+    const raw = await r.text();
+    if (!ct.includes("application/json")) {
+      // TikTok a renvoyé une page HTML (404/403...) → renvoyer l’aperçu pour debug
+      return res
+        .status(r.status)
+        .json({
+          error: "Non-JSON from TikTok",
+          status: r.status,
+          bodyPreview: raw.slice(0, 600),
+        });
     }
-    return res.json({
-      ok: true,
-      step: "initialize",
-      data: initData,
-    });
+    const data = JSON.parse(raw);
+    if (!r.ok) {
+      console.error("TikTok draft init error:", data);
+      return res.status(r.status).json(data);
+    }
+    return res.json({ ok: true, step: "inbox_init", data });
   } catch (error: any) {
     console.error(error);
     return res.status(500).json({ error: error?.message ?? "server_error" });
