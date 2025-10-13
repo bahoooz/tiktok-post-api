@@ -200,8 +200,14 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
   try {
     if (!accessToken)
       return res.status(401).json({ error: "Not connected to Tiktok" });
-    const { video_url } = req.body ?? {};
-    if (!video_url) return res.status(400).json({ error: "Missing videoUrl" });
+    const videoUrl =
+      req.body?.videoUrl ??
+      req.body?.source_info?.video_url ??
+      req.body?.video_url;
+    if (!videoUrl) {
+      console.log("Body reçu:", req.body); // debug
+      return res.status(400).json({ error: "Missing videoUrl" });
+    }
 
     const r = await fetch(
       "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/",
@@ -215,7 +221,7 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
         body: JSON.stringify({
           source_info: {
             source: "PULL_FROM_URL",
-            video_url
+            videoUrl,
           },
         }),
       }
@@ -224,13 +230,11 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
     const raw = await r.text();
     if (!ct.includes("application/json")) {
       // TikTok a renvoyé une page HTML (404/403...) → renvoyer l’aperçu pour debug
-      return res
-        .status(r.status)
-        .json({
-          error: "Non-JSON from TikTok",
-          status: r.status,
-          bodyPreview: raw.slice(0, 600),
-        });
+      return res.status(r.status).json({
+        error: "Non-JSON from TikTok",
+        status: r.status,
+        bodyPreview: raw.slice(0, 600),
+      });
     }
     const data = JSON.parse(raw);
     if (!r.ok) {
