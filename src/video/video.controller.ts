@@ -159,6 +159,7 @@ export const startTiktokLogin = async (_req: Request, res: Response) => {
     `https://www.tiktok.com/v2/auth/authorize/?${params.toString()}`
   );
 };
+
 export const tiktokCallback = async (req: Request, res: Response) => {
   const code = req.query.code as string;
   if (!code) return res.status(400).send("Missing code");
@@ -191,9 +192,54 @@ export const tiktokCallback = async (req: Request, res: Response) => {
 
   res.redirect("https://video.10banc.com/success-token");
 };
+
 export const tiktokStatus = async (_req: Request, res: Response) => {
   res.json({
     connected: !!accessToken,
     accessToken: accessToken ? "stored" : null,
   });
+};
+
+type TiktokInitResponse = any;
+
+const authHeaders = (token: string) => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
+});
+
+export const uploadDraftFromUrl = async (req: Request, res: Response) => {
+  try {
+    if (!accessToken)
+      return res.status(401).json({ error: "Not connected to Tiktok" });
+    const { videoUrl, caption } = req.body ?? {};
+    if (!videoUrl) return res.status(400).json({ error: "Missing videoUrl" });
+
+    const initResp = await fetch(
+      "https://open.tiktokapis.com/v2/post/publish/initialize/",
+      {
+        method: "POST",
+        headers: authHeaders(accessToken),
+        body: JSON.stringify({
+          source: "PULL_FROM_URL",
+          video_url: videoUrl,
+          caption: caption ?? "",
+          ai_generated: true,
+        }),
+      }
+    );
+
+    const initData: TiktokInitResponse = await initResp.json();
+    if (!initResp.ok) {
+      console.error("Tiktok draft init error :", initData);
+      return res.status(initResp.status).json(initData);
+    }
+    return res.json({
+      ok: true,
+      step: "initialize",
+      data: initData,
+    });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({ error: error?.message ?? "server_error" });
+  }
 };
