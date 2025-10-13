@@ -184,10 +184,7 @@ export const tiktokCallback = async (req: Request, res: Response) => {
   }
 
   accessToken = data.access_token;
-  console.log(
-    "✅ TikTok token récupéré avec succès :",
-    accessToken ? "OK" : "MISSING"
-  );
+  console.log("✅ TikTok token récupéré avec succès :", data);
 
   res.redirect("https://video.10banc.com/success-token");
 };
