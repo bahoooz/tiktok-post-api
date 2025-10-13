@@ -3,6 +3,13 @@ import { getAccessToken } from "../../utils.js";
 import { prisma } from "../lib/prisma.js";
 import { DataStatusVideo } from "../../types.js";
 import qs from "querystring";
+import fs from "fs";
+import path from "path";
+import { pipeline } from "stream/promises";
+import { createWriteStream } from "fs";
+import { randomUUID } from "crypto";
+
+const MEDIA_DIR = path.join(process.cwd(), "media");
 
 const baseUrl = process.env.API_URL;
 const bucketName = process.env.GCS_BUCKET;
@@ -105,16 +112,50 @@ export const getStatusVideo = async (req: Request, res: Response) => {
     );
     const dataStatusVideo: DataStatusVideo = await statusVideo.json();
 
+    const gcsUri = dataStatusVideo.response?.videos?.[0]?.gcsUri ?? null;
+
     const existingVideoUpdated = await prisma.video.update({
       where: { operationId },
       data: {
         done: dataStatusVideo.done,
-        uri: dataStatusVideo.response?.videos?.[0].gcsUri ?? null,
+        uri: gcsUri,
       },
     });
 
+    let localUrl: string | null = null;
+
+    if (gcsUri) {
+      if (!fs.existsSync(MEDIA_DIR))
+        fs.mkdirSync(MEDIA_DIR, { recursive: true });
+
+      const toHttpsFromGs = (uri: string) => {
+        if (!uri.startsWith("gs://")) return uri;
+        const without = uri.replace("gs://", "");
+        const [bucket, ...rest] = without.split("/");
+        return `https://storage.googleapis.com/${bucket}/${rest.join("/")}`;
+      };
+      const publicUrl = toHttpsFromGs(gcsUri);
+
+      const r = await fetch(publicUrl);
+
+      if (r.ok && r.body) {
+        const filename = `${operationId}.mp4`;
+        const destPath = path.join(MEDIA_DIR, filename);
+        await pipeline(r.body as any, createWriteStream(destPath));
+
+        const base =
+          process.env.MEDIA_BASE_URL ??
+          `${req.protocol}://${req.get("host")}/media`;
+        localUrl = `${base}/${filename}`;
+      } else {
+        console.error("Mirror download failed :", publicUrl, r.status);
+      }
+    }
+
     console.log("Voici les données actuelles du statut : ", dataStatusVideo);
-    return res.status(200).json({ existingVideoUpdated, dataStatusVideo });
+    return res
+      .status(200)
+      .json({ existingVideoUpdated, dataStatusVideo, localUrl });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }

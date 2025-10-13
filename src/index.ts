@@ -8,6 +8,7 @@ const baseUrl = process.env.API_URL;
 
 import videoRoutes from "./video/video.routes.js";
 import promptRoutes from "./prompt/prompt.routes.js";
+import path from "path";
 
 app.use(express.json());
 
@@ -18,6 +19,8 @@ app.use(
     credentials: true, // si tu utilises des cookies ou headers d'auth
   })
 );
+
+app.use("/media", express.static(path.join(process.cwd(), "media")));
 
 app.get("/", (_req, res) => {
   res.send("<h1>Hello Express</h1>");
