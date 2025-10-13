@@ -211,15 +211,19 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
     if (!videoUrl) return res.status(400).json({ error: "Missing videoUrl" });
 
     const initResp = await fetch(
-      "https://open.tiktokapis.com/v2/post/publish/initialize/",
+      "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/",
       {
         method: "POST",
-        headers: authHeaders(accessToken),
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json; charset=UTF-8",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
-          source: "PULL_FROM_URL",
-          video_url: videoUrl,
-          caption: caption ?? "",
-          ai_generated: true,
+          source_info: {
+            source: "PULL_FROM_URL",
+            video_url: videoUrl
+          },
         }),
       }
     );
