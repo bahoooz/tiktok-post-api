@@ -196,14 +196,12 @@ export const tiktokStatus = async (_req: Request, res: Response) => {
   });
 };
 
-type TiktokInitResponse = any;
-
 export const uploadDraftFromUrl = async (req: Request, res: Response) => {
   try {
     if (!accessToken)
       return res.status(401).json({ error: "Not connected to Tiktok" });
-    const { videoUrl } = req.body ?? {};
-    if (!videoUrl) return res.status(400).json({ error: "Missing videoUrl" });
+    const { video_url } = req.body ?? {};
+    if (!video_url) return res.status(400).json({ error: "Missing videoUrl" });
 
     const r = await fetch(
       "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/",
@@ -217,7 +215,7 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
         body: JSON.stringify({
           source_info: {
             source: "PULL_FROM_URL",
-            video_url: videoUrl,
+            video_url
           },
         }),
       }
