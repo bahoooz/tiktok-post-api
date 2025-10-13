@@ -141,10 +141,10 @@ export const startTiktokLogin = async (_req: Request, res: Response) => {
   const state = crypto.randomUUID();
 
   const params = new URLSearchParams({
-    client_key: TIKTOK_CLIENT_KEY!,
-    scope: TIKTOK_SCOPES!,
+    client_key: process.env.TIKTOK_CLIENT_KEY!,
+    scope: process.env.TIKTOK_SCOPES!,
     response_type: "code",
-    redirect_uri: TIKTOK_REDIRECT_URI!,
+    redirect_uri: process.env.TIKTOK_REDIRECT_URI!,
     state,
   });
 
