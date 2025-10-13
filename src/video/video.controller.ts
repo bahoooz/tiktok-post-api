@@ -262,7 +262,7 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
         body: JSON.stringify({
           source_info: {
             source: "PULL_FROM_URL",
-            videoUrl,
+            video_url: videoUrl,
           },
         }),
       }
