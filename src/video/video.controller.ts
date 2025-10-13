@@ -135,13 +135,6 @@ export const getAllVideos = async (_req: Request, res: Response) => {
 
 // TIKTOK API
 
-const {
-  TIKTOK_CLIENT_KEY,
-  TIKTOK_CLIENT_SECRET,
-  TIKTOK_REDIRECT_URI,
-  TIKTOK_SCOPES,
-} = process.env;
-
 let accessToken: string | null = null;
 
 export const startTiktokLogin = async (_req: Request, res: Response) => {
@@ -165,11 +158,11 @@ export const tiktokCallback = async (req: Request, res: Response) => {
   if (!code) return res.status(400).send("Missing code");
 
   const body = qs.stringify({
-    client_key: TIKTOK_CLIENT_KEY!,
-    client_secret: TIKTOK_CLIENT_SECRET!,
+    client_key: process.env.TIKTOK_CLIENT_KEY!,
+    client_secret: process.env.TIKTOK_CLIENT_SECRET!,
     code,
     grant_type: "authorization_code",
-    redirect_uri: TIKTOK_REDIRECT_URI,
+    redirect_uri: process.env.TIKTOK_REDIRECT_URI,
   });
 
   const response = await fetch("https://open.tiktokapis.com/v2/oauth/token/", {
@@ -183,12 +176,18 @@ export const tiktokCallback = async (req: Request, res: Response) => {
   const data = await response.json();
 
   if (!response.ok) {
-    console.error("❌ TikTok token exchange failed:", data);
-    return res.status(500).json(data);
+    console.error("❌ TikTok token exchange failed. Full payload :", data);
+    return res.status(500).json({
+      message: "Token exhange failed",
+      data,
+    });
   }
 
   accessToken = data.access_token;
-  console.log("✅ TikTok token récupéré avec succès :", accessToken);
+  console.log(
+    "✅ TikTok token récupéré avec succès :",
+    accessToken ? "OK" : "MISSING"
+  );
 
   res.redirect("https://video.10banc.com/success-token");
 };
