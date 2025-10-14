@@ -287,5 +287,40 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
 };
 
 export const uploadDirectPostFromUrl = async (req: Request, res: Response) => {
-  const video_url = req.body?.source_info?.video_url;
+  try {
+    if (!accessToken)
+      return res.status(401).json({ error: "Not connected to Tiktok" });
+
+    const { video_url } = req.body;
+
+    if (!video_url) {
+      console.log("Body reçu:", req.body); // debug
+      return res.status(400).json({ error: "Missing videoUrl" });
+    }
+
+    const r = await fetch(
+      "https://open.tiktokapis.com/v2/post/publish/video/init/",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify({
+          post_info: {
+            title: "C'est bientôt halloween #fyp #pourtoi",
+            privacy_level: "PUBLIC_TO_EVERYONE",
+            is_aigc: true,
+            video_cover_timestamp_ms: 1000,
+            brand_content_toggle: false,
+            brand_organic_toggle: false
+          },
+          source_info: {
+            source: "PULL_FROM_URL",
+            video_url,
+          },
+        }),
+      }
+    );
+  } catch (error) {}
 };
