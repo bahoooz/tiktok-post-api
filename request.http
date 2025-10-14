@@ -4,10 +4,8 @@ POST https://videoapi.10banc.com/video/tiktok/upload-draft
 Content-Type: application/json
 
 {
-    "source_info": {
         "source": "PULL_FROM_URL",
-        "video_url": "https://videoapi.10banc.com/media/91d49dfd-aff8-4fc8-bb26-b3d504fa1588.mp4"
-    }
+        "video_url": "https://videoapi.10banc.com/media/51e85412-8b78-4021-a374-f80bce3de043.mp4"
 }
 
 ### TEST TIKTOK

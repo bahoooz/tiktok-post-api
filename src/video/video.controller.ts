@@ -241,9 +241,7 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
   try {
     if (!accessToken)
       return res.status(401).json({ error: "Not connected to Tiktok" });
-
-    const {video_url} = req.body
-
+    const { video_url } = req.body;
     if (!video_url) {
       console.log("Body reçu:", req.body); // debug
       return res.status(400).json({ error: "Missing videoUrl" });
@@ -261,7 +259,7 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
         body: JSON.stringify({
           source_info: {
             source: "PULL_FROM_URL",
-            video_url
+            video_url,
           },
         }),
       }
@@ -289,5 +287,5 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
 };
 
 export const uploadDirectPostFromUrl = async (req: Request, res: Response) => {
-  const { video_url } = req.body;
+  const video_url = req.body?.source_info?.video_url;
 };
