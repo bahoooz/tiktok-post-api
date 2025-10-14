@@ -1,17 +1,27 @@
-import express from "express"
+import express from "express";
 
-import { createVideo, getAllVideos, getStatusVideo, startTiktokLogin, tiktokCallback, tiktokStatus, uploadDraftFromUrl } from "./video.controller.js"
+import {
+  createVideo,
+  getAllVideos,
+  getStatusVideo,
+  startTiktokLogin,
+  tiktokCallback,
+  tiktokStatus,
+  uploadDirectPostFromUrl,
+  uploadDraftFromUrl,
+} from "./video.controller.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/generate", createVideo)
-router.get("/status/:operationId", getStatusVideo)
-router.get("/get", getAllVideos)
+router.post("/generate", createVideo);
+router.get("/status/:operationId", getStatusVideo);
+router.get("/get", getAllVideos);
 
-router.get("/auth/tiktok/login", startTiktokLogin)
-router.get("/auth/tiktok/callback", tiktokCallback)
-router.get("/auth/tiktok/status", tiktokStatus)
+router.get("/auth/tiktok/login", startTiktokLogin);
+router.get("/auth/tiktok/callback", tiktokCallback);
+router.get("/auth/tiktok/status", tiktokStatus);
 
-router.post("/tiktok/upload-draft", uploadDraftFromUrl)
+router.post("/tiktok/upload-draft", uploadDraftFromUrl);
+router.post("/tiktok/direct-post", uploadDirectPostFromUrl);
 
 export default router;

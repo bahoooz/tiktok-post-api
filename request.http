@@ -9,3 +9,21 @@ Content-Type: application/json
         "video_url": "https://videoapi.10banc.com/media/91d49dfd-aff8-4fc8-bb26-b3d504fa1588.mp4"
     }
 }
+
+### TEST TIKTOK
+
+### TEST TIKTOK — Vérifier statut du brouillon
+POST https://open.tiktokapis.com/v2/post/publish/status/fetch/
+Authorization: Bearer act.jlkdYq5zeFysgtnwQjRD05I5bZPeKPUDOZlnj81UjtX3Y4zcq66x96IrV0hh!4864.e1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "publish_id": "v_inbox_url~v2.7560771707275954198"
+}
+
+### INFO CREATOR TIKTOK 
+
+POST https://open.tiktokapis.com/v2/post/publish/creator_info/query/
+Authorization: Bearer act.jlkdYq5zeFysgtnwQjRD05I5bZPeKPUDOZlnj81UjtX3Y4zcq66x96IrV0hh!4864.e1
+Content-Type: application/json; charset=UTF-8
