@@ -313,7 +313,7 @@ export const uploadDirectPostFromUrl = async (req: Request, res: Response) => {
             is_aigc: true,
             video_cover_timestamp_ms: 1000,
             brand_content_toggle: false,
-            brand_organic_toggle: false
+            brand_organic_toggle: false,
           },
           source_info: {
             source: "PULL_FROM_URL",
@@ -322,5 +322,10 @@ export const uploadDirectPostFromUrl = async (req: Request, res: Response) => {
         }),
       }
     );
-  } catch (error) {}
+    const data = await r.json();
+    res.status(200).json({ message: "ça a marché : ", data });
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).json({ error: error?.message ?? "server_error" });
+  }
 };

@@ -13,7 +13,6 @@ POST https://videoapi.10banc.com/video/tiktok/direct-post
 Content-Type: application/json
 
 {
-        "source": "PULL_FROM_URL",
         "video_url": "https://videoapi.10banc.com/media/51e85412-8b78-4021-a374-f80bce3de043.mp4"
 }
 
