@@ -38,7 +38,6 @@ export const createVideo = async (_req: Request, res: Response) => {
 Commence par une phrase d’accroche en français effrayante.
 Option : petit dialogue en français (2-5 lignes).
 Une seule scène simple, ambiance mystérieuse, sombre, mais fun.
-Décris ensuite la scène en anglais (visuel, lumière, caméra, ton cartoon-horror).
     `;
 
     const veoRequest = await fetch(
