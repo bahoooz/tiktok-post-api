@@ -4,7 +4,7 @@ const baseUrl = process.env.API_URL;
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 cron.schedule(
-  "17 0 * * *",
+  "28 0 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
@@ -33,7 +33,7 @@ cron.schedule(
       if (!localUrl) throw new Error("localUrl manquant");
       console.log("local url :", localUrl)
 
-      const tiktokPostRes = await fetch(`${baseUrl}/tiktok/upload-draft`, {
+      const tiktokPostRes = await fetch(`${baseUrl}/video/tiktok/upload-draft`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
