@@ -309,7 +309,7 @@ export const uploadDirectPostFromUrl = async (req: Request, res: Response) => {
         body: JSON.stringify({
           post_info: {
             title: "C'est bientôt halloween #fyp #pourtoi",
-            privacy_level: "PUBLIC_TO_EVERYONE",
+            privacy_level: "SELF_ONLY",
             is_aigc: true,
             video_cover_timestamp_ms: 1000,
             brand_content_toggle: false,
