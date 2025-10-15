@@ -7,7 +7,6 @@ import fs from "fs";
 import path from "path";
 import { pipeline } from "stream/promises";
 import { createWriteStream } from "fs";
-import { randomUUID } from "crypto";
 
 const MEDIA_DIR = path.join(process.cwd(), "media");
 
@@ -25,14 +24,23 @@ export const createVideo = async (_req: Request, res: Response) => {
       throw new Error(
         `generate-prompt failed : ${generatePrompt.status} ${generatePrompt.statusText}`
       );
-    const { prompt } = (await generatePrompt.json()) as { prompt: string };
-    if (!prompt || typeof prompt !== "string")
-      throw new Error("Invalid prompt payload form /generate-prompt");
+    // const { prompt } = (await generatePrompt.json()) as { prompt: string };
+    // if (!prompt || typeof prompt !== "string")
+    //   throw new Error("Invalid prompt payload form /generate-prompt");
 
-    console.log("prompt :", prompt);
+    // console.log("prompt :", prompt);
 
     // GENERER AVEC LA VIDEO (VEO3)
     const token = await getAccessToken();
+
+    const prompt = `
+    Crée un concept de mini-vidéo d’horreur cartoon (8 s max) avec au moins une créature étrange.
+Commence par une phrase d’accroche en français effrayante.
+Option : petit dialogue en français (2-5 lignes).
+Une seule scène simple, ambiance mystérieuse, sombre, mais fun.
+Décris ensuite la scène en anglais (visuel, lumière, caméra, ton cartoon-horror).
+    `;
+
     const veoRequest = await fetch(
       `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:predictLongRunning`,
       {
@@ -235,97 +243,4 @@ export const tiktokStatus = async (_req: Request, res: Response) => {
     connected: !!accessToken,
     accessToken: accessToken ? "stored" : null,
   });
-};
-
-export const uploadDraftFromUrl = async (req: Request, res: Response) => {
-  try {
-    if (!accessToken)
-      return res.status(401).json({ error: "Not connected to Tiktok" });
-    const { video_url } = req.body;
-    if (!video_url) {
-      console.log("Body reçu:", req.body); // debug
-      return res.status(400).json({ error: "Missing videoUrl" });
-    }
-
-    const r = await fetch(
-      "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json; charset=UTF-8",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          source_info: {
-            source: "PULL_FROM_URL",
-            video_url,
-          },
-        }),
-      }
-    );
-    const ct = r.headers.get("content-type") || "";
-    const raw = await r.text();
-    if (!ct.includes("application/json")) {
-      // TikTok a renvoyé une page HTML (404/403...) → renvoyer l’aperçu pour debug
-      return res.status(r.status).json({
-        error: "Non-JSON from TikTok",
-        status: r.status,
-        bodyPreview: raw.slice(0, 600),
-      });
-    }
-    const data = JSON.parse(raw);
-    if (!r.ok) {
-      console.error("TikTok draft init error:", data);
-      return res.status(r.status).json(data);
-    }
-    return res.json({ ok: true, step: "inbox_init", data });
-  } catch (error: any) {
-    console.error(error);
-    return res.status(500).json({ error: error?.message ?? "server_error" });
-  }
-};
-
-export const uploadDirectPostFromUrl = async (req: Request, res: Response) => {
-  try {
-    if (!accessToken)
-      return res.status(401).json({ error: "Not connected to Tiktok" });
-
-    const { video_url } = req.body;
-
-    if (!video_url) {
-      console.log("Body reçu:", req.body); // debug
-      return res.status(400).json({ error: "Missing videoUrl" });
-    }
-
-    const r = await fetch(
-      "https://open.tiktokapis.com/v2/post/publish/video/init/",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json; charset=UTF-8",
-        },
-        body: JSON.stringify({
-          post_info: {
-            title: "C'est bientôt halloween #fyp #pourtoi",
-            privacy_level: "SELF_ONLY",
-            is_aigc: true,
-            video_cover_timestamp_ms: 1000,
-            brand_content_toggle: false,
-            brand_organic_toggle: false,
-          },
-          source_info: {
-            source: "PULL_FROM_URL",
-            video_url,
-          },
-        }),
-      }
-    );
-    const data = await r.json();
-    res.status(200).json({ message: "ça a marché : ", data });
-  } catch (error: any) {
-    console.error(error);
-    return res.status(500).json({ error: error?.message ?? "server_error" });
-  }
 };

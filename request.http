@@ -4,7 +4,7 @@ POST https://videoapi.10banc.com/video/tiktok/upload-draft
 Content-Type: application/json
 
 {
-        "video_url": "https://videoapi.10banc.com/media/51e85412-8b78-4021-a374-f80bce3de043.mp4"
+        "video_url": "https://videoapi.10banc.com/media/2ef12135-1806-46da-9890-d8883155a614.mp4"
 }
 
 ### Test direct post tiktok
@@ -33,3 +33,7 @@ Accept: application/json
 POST https://open.tiktokapis.com/v2/post/publish/creator_info/query/
 Authorization: Bearer act.jlkdYq5zeFysgtnwQjRD05I5bZPeKPUDOZlnj81UjtX3Y4zcq66x96IrV0hh!4864.e1
 Content-Type: application/json; charset=UTF-8
+
+### TEST VIDEO AVEC NOUVEAU PROMPT
+
+POST http://localhost:4000/video/generate

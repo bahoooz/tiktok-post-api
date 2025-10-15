@@ -8,6 +8,7 @@ const baseUrl = process.env.API_URL;
 
 import videoRoutes from "./video/video.routes.js";
 import promptRoutes from "./prompt/prompt.routes.js";
+import tiktokRoutes from "./tiktok/tiktok.routes.js";
 import path from "path";
 
 app.use(express.json());
@@ -28,6 +29,7 @@ app.get("/", (_req, res) => {
 
 app.use("/video", videoRoutes);
 app.use("/prompt", promptRoutes);
+app.use("/tiktok", tiktokRoutes);
 
 app.listen(4000, "0.0.0.0", () => {
   console.log(`Server is running at ${baseUrl}`);
