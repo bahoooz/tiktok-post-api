@@ -7,7 +7,10 @@ import fs from "fs";
 import path from "path";
 import { pipeline } from "stream/promises";
 import { createWriteStream } from "fs";
-import { getTiktokAccessToken, saveInitialOAuthTokens } from "../lib/tiktokAuth.js";
+import {
+  getTiktokAccessToken,
+  saveInitialOAuthTokens,
+} from "../lib/tiktokAuth.js";
 
 const MEDIA_DIR = path.join(process.cwd(), "media");
 
@@ -35,10 +38,10 @@ export const createVideo = async (_req: Request, res: Response) => {
     const token = await getAccessToken();
 
     const prompt = `
-    Crée un concept de mini-vidéo d’horreur cartoon (8 s max) avec au moins une créature étrange.
+    Crée un concept de mini-vidéo d’horreur fantaisiste (8 s max) avec une créature (araignée, géant, homme citrouille ou lutin malicieux).
 Commence par une phrase d’accroche en français effrayante.
 Option : petit dialogue en français (2-5 lignes).
-Une seule scène simple, ambiance mystérieuse, sombre, mais fun.
+Une seule scène simple, ambiance mystérieuse, et assez sombre.
     `;
 
     const veoRequest = await fetch(
@@ -188,8 +191,7 @@ let accessToken: string | null = null;
 
 export const uploadDraftFromUrl = async (req: Request, res: Response) => {
   try {
-
-    const accessToken = await getTiktokAccessToken()
+    const accessToken = await getTiktokAccessToken();
 
     if (!accessToken)
       return res.status(401).json({ error: "Not connected to Tiktok" });
@@ -328,7 +330,7 @@ export const tiktokCallback = async (req: Request, res: Response) => {
     });
   }
 
-  saveInitialOAuthTokens(data)
+  saveInitialOAuthTokens(data);
 
   console.log("✅ TikTok token récupéré avec succès :", data);
 
