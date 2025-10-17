@@ -7,6 +7,7 @@ import fs from "fs";
 import path from "path";
 import { pipeline } from "stream/promises";
 import { createWriteStream } from "fs";
+import { getTiktokAccessToken, saveInitialOAuthTokens } from "../lib/tiktokAuth.js";
 
 const MEDIA_DIR = path.join(process.cwd(), "media");
 
@@ -187,6 +188,9 @@ let accessToken: string | null = null;
 
 export const uploadDraftFromUrl = async (req: Request, res: Response) => {
   try {
+
+    const accessToken = await getTiktokAccessToken()
+
     if (!accessToken)
       return res.status(401).json({ error: "Not connected to Tiktok" });
     const { video_url } = req.body;
@@ -324,7 +328,8 @@ export const tiktokCallback = async (req: Request, res: Response) => {
     });
   }
 
-  accessToken = data.access_token;
+  saveInitialOAuthTokens(data)
+
   console.log("✅ TikTok token récupéré avec succès :", data);
 
   res.redirect("https://video.10banc.com/success-token");

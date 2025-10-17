@@ -7,3 +7,5 @@ node_modules
 .env
 
 /media
+
+tiktok_token.json

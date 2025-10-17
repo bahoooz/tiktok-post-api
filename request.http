@@ -4,7 +4,7 @@ POST https://videoapi.10banc.com/video/tiktok/upload-draft
 Content-Type: application/json
 
 {
-        "video_url": "https://videoapi.10banc.com/media/f37e4b58-c37a-42bd-9040-88f829f5ef61.mp4"
+        "video_url": "https://videoapi.10banc.com/media/e0ce23fd-98e6-4ed3-a459-2e572affa3e2.mp4"
 }
 
 ### Test direct post tiktok
