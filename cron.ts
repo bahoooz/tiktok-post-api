@@ -4,7 +4,7 @@ const baseUrl = process.env.API_URL;
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 cron.schedule(
-  "30 13 * * *",
+  "0 21 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
