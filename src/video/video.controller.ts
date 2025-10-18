@@ -38,9 +38,7 @@ export const createVideo = async (_req: Request, res: Response) => {
     const token = await getAccessToken();
 
     const prompt = `
-    Crée un concept de mini-vidéo d’horreur fantaisiste (8 s max) avec une créature (araignée, géant, homme citrouille ou lutin malicieux).
-Commence par une phrase d’accroche en français effrayante.
-Option : petit dialogue en français (2-5 lignes).
+    Crée un concept de mini-vidéo d’horreur fantaisiste (8 s max) avec une créature aquatique géante de loin qui fait du bruit dans un lac.
 Une seule scène simple, ambiance mystérieuse, et assez sombre.
     `;
 
