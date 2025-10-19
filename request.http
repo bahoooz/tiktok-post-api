@@ -37,3 +37,7 @@ Content-Type: application/json; charset=UTF-8
 ### TEST VIDEO AVEC NOUVEAU PROMPT
 
 POST http://localhost:4000/video/generate
+
+###
+
+POST https://videoapi.10banc.com/video/status/d566725a-64da-4e59-a70e-23a7c207a99d
