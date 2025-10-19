@@ -25,7 +25,7 @@ cron.schedule(
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt
+          prompt,
         }),
       });
       if (!res.ok) throw new Error(`generate -> HTTP¨${res.status}`);
@@ -75,7 +75,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "10 9 * * *",
+  "8 15 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
@@ -83,8 +83,20 @@ cron.schedule(
     );
 
     try {
+      const promptRes = await prisma.prompt.findUnique({
+        where: { id: 2 },
+      });
+
+      const prompt =
+        promptRes?.prompt ??
+        "Crée un concept de mini-vidéo d’horreur fantaisiste (8 s max) avec une créature mythique, bruyante et sombre dans une plaine. Une seule scène simple, ambiance mystérieuse et assez sombre.";
+
       const res = await fetch(`${baseUrl}/video/generate`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+        }),
       });
       if (!res.ok) throw new Error(`generate -> HTTP¨${res.status}`);
       const data = await res.json();
@@ -133,7 +145,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "20 9 * * *",
+  "11 15 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
@@ -141,8 +153,20 @@ cron.schedule(
     );
 
     try {
+      const promptRes = await prisma.prompt.findUnique({
+        where: { id: 3 },
+      });
+
+      const prompt =
+        promptRes?.prompt ??
+        "Crée un concept de mini-vidéo d’horreur fantaisiste (8 s max) avec une créature mythique, bruyante et sombre dans une plaine. Une seule scène simple, ambiance mystérieuse et assez sombre.";
+
       const res = await fetch(`${baseUrl}/video/generate`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+        }),
       });
       if (!res.ok) throw new Error(`generate -> HTTP¨${res.status}`);
       const data = await res.json();
