@@ -21,13 +21,13 @@ const model = "veo-3.0-fast-generate-001";
 const location = "us-central1";
 const aspectRatio = "9:16";
 
-export const createVideo = async (_req: Request, res: Response) => {
+export const createVideo = async (req: Request, res: Response) => {
   try {
-    const generatePrompt = await fetch(`${baseUrl}/prompt/generate`);
-    if (!generatePrompt.ok)
-      throw new Error(
-        `generate-prompt failed : ${generatePrompt.status} ${generatePrompt.statusText}`
-      );
+    // const generatePrompt = await fetch(`${baseUrl}/prompt/generate`);
+    // if (!generatePrompt.ok)
+    //   throw new Error(
+    //     `generate-prompt failed : ${generatePrompt.status} ${generatePrompt.statusText}`
+    //   );
     // const { prompt } = (await generatePrompt.json()) as { prompt: string };
     // if (!prompt || typeof prompt !== "string")
     //   throw new Error("Invalid prompt payload form /generate-prompt");
@@ -37,10 +37,7 @@ export const createVideo = async (_req: Request, res: Response) => {
     // GENERER AVEC LA VIDEO (VEO3)
     const token = await getAccessToken();
 
-    const prompt = `
-    Crée un concept de mini-vidéo d’horreur fantaisiste (8 s max) avec une créature aquatique géante de loin qui fait du bruit dans un lac.
-Une seule scène simple, ambiance mystérieuse, et assez sombre.
-    `;
+    const { prompt } = req.body;
 
     const veoRequest = await fetch(
       `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:predictLongRunning`,

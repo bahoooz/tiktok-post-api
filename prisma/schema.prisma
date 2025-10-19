@@ -11,9 +11,14 @@ model Video {
   id          Int      @id @default(autoincrement())
   type        String   @default("tiktok")
   operationId String   @unique
-  done        Boolean @default(false)
+  done        Boolean  @default(false)
   isPosted    Boolean? @default(false)
   prompt      String
   uri         String?
   createdAt   DateTime @default(now())
+}
+
+model Prompt {
+  id     Int    @id @default(autoincrement())
+  prompt String @default("Crée un concept de mini-vidéo d’horreur fantaisiste (8 s max) avec une créature mythique, bruyante et sombre dans une plaine. Une seule scène simple, ambiance mystérieuse et assez sombre.")
 }
