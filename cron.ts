@@ -5,7 +5,7 @@ const baseUrl = process.env.API_URL;
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 cron.schedule(
-  "55 15 * * *",
+  "0 9 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
@@ -125,6 +125,7 @@ cron.schedule(
           },
           body: JSON.stringify({
             video_url: localUrl,
+            operationId
           }),
         }
       );
@@ -195,6 +196,7 @@ cron.schedule(
           },
           body: JSON.stringify({
             video_url: localUrl,
+            operationId
           }),
         }
       );
@@ -265,6 +267,7 @@ cron.schedule(
           },
           body: JSON.stringify({
             video_url: localUrl,
+            operationId
           }),
         }
       );
