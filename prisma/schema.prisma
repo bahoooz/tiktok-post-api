@@ -14,7 +14,8 @@ model Video {
   done        Boolean  @default(false)
   isPosted    Boolean? @default(false)
   prompt      String
-  uri         String?
+  uri         String?  @unique
+  url_link    String?   @unique
   createdAt   DateTime @default(now())
 }
 

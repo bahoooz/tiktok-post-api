@@ -158,6 +158,14 @@ export const getStatusVideo = async (req: Request, res: Response) => {
       }
     }
 
+    const updatedVideo = await prisma.video.update({
+      where: { operationId },
+      data: {
+        url_link: localUrl,
+      },
+    });
+
+    console.log("Updated video successfully : ", updatedVideo);
     console.log("Voici les données actuelles du statut : ", dataStatusVideo);
     return res
       .status(200)
@@ -190,13 +198,20 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
 
     if (!accessToken)
       return res.status(401).json({ error: "Not connected to Tiktok" });
-    const { video_url } = req.body;
+
+    const { video_url, operationId } = req.body;
+
     if (!video_url) {
-      console.log("Body reçu:", req.body); // debug
       return res.status(400).json({ error: "Missing videoUrl" });
     }
 
-    const r = await fetch(
+    if (!operationId) {
+      return res.status(400).json({ error: "Missing operationId" });
+    }
+
+    console.log("Body reçu :", req.body);
+
+    const response = await fetch(
       "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/",
       {
         method: "POST",
@@ -213,21 +228,31 @@ export const uploadDraftFromUrl = async (req: Request, res: Response) => {
         }),
       }
     );
-    const ct = r.headers.get("content-type") || "";
-    const raw = await r.text();
+    const ct = response.headers.get("content-type") || "";
+    const raw = await response.text();
     if (!ct.includes("application/json")) {
       // TikTok a renvoyé une page HTML (404/403...) → renvoyer l’aperçu pour debug
-      return res.status(r.status).json({
+      return res.status(response.status).json({
         error: "Non-JSON from TikTok",
-        status: r.status,
+        status: response.status,
         bodyPreview: raw.slice(0, 600),
       });
     }
     const data = JSON.parse(raw);
-    if (!r.ok) {
+    if (!response.ok) {
       console.error("TikTok draft init error:", data);
-      return res.status(r.status).json(data);
+      return res.status(response.status).json(data);
     }
+
+    const updatedVideo = await prisma.video.update({
+      where: { operationId },
+      data: {
+        isPosted: true,
+      },
+    });
+
+    console.log("video uptated successfully : ", updatedVideo);
+
     return res.json({ ok: true, step: "inbox_init", data });
   } catch (error: any) {
     console.error(error);
