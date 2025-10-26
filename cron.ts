@@ -76,7 +76,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "10 9 * * *",
+  "32 12 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
@@ -218,7 +218,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "30 9 * * *",
+  "35 12 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
