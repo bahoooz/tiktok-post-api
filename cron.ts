@@ -5,7 +5,7 @@ const baseUrl = process.env.API_URL;
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 cron.schedule(
-  "00 9 * * *",
+  "55 11 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
@@ -34,7 +34,7 @@ cron.schedule(
       const operationId = data.video.operationId;
       if (!operationId) throw new Error("operationId manquant");
 
-      await delay(60_000);
+      await delay(70_000);
 
       const statusRes = await fetch(`${baseUrl}/video/status/${operationId}`, {
         method: "POST",
@@ -105,7 +105,7 @@ cron.schedule(
       const operationId = data.video.operationId;
       if (!operationId) throw new Error("operationId manquant");
 
-      await delay(60_000);
+      await delay(70_000);
 
       const statusRes = await fetch(`${baseUrl}/video/status/${operationId}`, {
         method: "POST",
@@ -176,7 +176,7 @@ cron.schedule(
       const operationId = data.video.operationId;
       if (!operationId) throw new Error("operationId manquant");
 
-      await delay(60_000);
+      await delay(70_000);
 
       const statusRes = await fetch(`${baseUrl}/video/status/${operationId}`, {
         method: "POST",
@@ -218,7 +218,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "30 9 * * *",
+  "59 11 * * *",
   async () => {
     console.log(
       "Création de la vidéo lancé à ",
@@ -247,7 +247,7 @@ cron.schedule(
       const operationId = data.video.operationId;
       if (!operationId) throw new Error("operationId manquant");
 
-      await delay(60_000);
+      await delay(70_000);
 
       const statusRes = await fetch(`${baseUrl}/video/status/${operationId}`, {
         method: "POST",
