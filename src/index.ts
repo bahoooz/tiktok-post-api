@@ -9,7 +9,14 @@ const baseUrl = process.env.API_URL;
 import videoRoutes from "./video/video.routes.js";
 import promptRoutes from "./prompt/prompt.routes.js";
 import tiktokRoutes from "./tiktok/tiktok.routes.js";
+import cutRoutes from "./cut/cut.routes.js";
 import path from "path";
+
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 app.use(express.json());
 
@@ -27,6 +34,8 @@ app.get("/", (_req, res) => {
   res.send("<h1>Hello Express</h1>");
 });
 
+app.use("/cut", cutRoutes);
+app.use("/output", express.static(path.join(__dirname, "cut", "output")));
 app.use("/video", videoRoutes);
 app.use("/prompt", promptRoutes);
 app.use("/tiktok", tiktokRoutes);
