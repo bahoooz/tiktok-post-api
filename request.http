@@ -40,4 +40,4 @@ POST http://localhost:4000/video/generate
 
 ###
 
-POST https://videoapi.10banc.com/video/status/554e5dfe-e1a1-4656-828b-071281e4cbe7
+POST https://videoapi.10banc.com/video/status/3a53d72d-80e0-4a1b-a819-407fac92a425

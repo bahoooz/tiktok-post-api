@@ -34,7 +34,7 @@ cron.schedule(
       const operationId = data.video.operationId;
       if (!operationId) throw new Error("operationId manquant");
 
-      await delay(70_000);
+      await delay(90_000);
 
       const statusRes = await fetch(`${baseUrl}/video/status/${operationId}`, {
         method: "POST",
@@ -105,7 +105,7 @@ cron.schedule(
       const operationId = data.video.operationId;
       if (!operationId) throw new Error("operationId manquant");
 
-      await delay(70_000);
+      await delay(90_000);
 
       const statusRes = await fetch(`${baseUrl}/video/status/${operationId}`, {
         method: "POST",
@@ -176,7 +176,7 @@ cron.schedule(
       const operationId = data.video.operationId;
       if (!operationId) throw new Error("operationId manquant");
 
-      await delay(70_000);
+      await delay(90_000);
 
       const statusRes = await fetch(`${baseUrl}/video/status/${operationId}`, {
         method: "POST",
@@ -247,7 +247,7 @@ cron.schedule(
       const operationId = data.video.operationId;
       if (!operationId) throw new Error("operationId manquant");
 
-      await delay(70_000);
+      await delay(90_000);
 
       const statusRes = await fetch(`${baseUrl}/video/status/${operationId}`, {
         method: "POST",
