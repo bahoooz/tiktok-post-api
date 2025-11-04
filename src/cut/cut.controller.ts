@@ -18,9 +18,9 @@ export const CutVideo = async (req: Request, res: Response) => {
   const partDuration = Number(req.query.duration);
 
   // Utile ici que pour cleanup le dossier, on le gère vraiment dans multer.ts
-  const inputDir = path.join(__dirname, "/input");
+  const inputDir = path.join(process.cwd(), "cut", "input");
 
-  const outputDir = path.join(__dirname, "/output");
+  const outputDir = path.join(process.cwd(), "cut", "output");
 
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
@@ -115,6 +115,6 @@ export const CutVideo = async (req: Request, res: Response) => {
     await archive.finalize();
   } catch (error) {
     console.error("Erreur : ", error);
-    return res.status(500).json({ error: "Internal Error Server" });
+    return res.status(500).json({ message: "Internal Error Server", error });
   }
 };
