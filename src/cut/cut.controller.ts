@@ -19,7 +19,6 @@ export const CutVideo = async (req: Request, res: Response) => {
 
   // Utile ici que pour cleanup le dossier, on le gère vraiment dans multer.ts
   const inputDir = path.join(process.cwd(), "cut", "input");
-
   const outputDir = path.join(process.cwd(), "cut", "output");
 
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
@@ -43,22 +42,31 @@ export const CutVideo = async (req: Request, res: Response) => {
       const outputPath = path.join(outputDir, `partie_${i + 1}.mp4`);
 
       ffmpeg(inputFilePath)
+        // --- filters (ordre important) ---
+        .videoFilters([
+          "setsar=1", // évite les soucis d'aspect ratio
+          "crop=1080:1080:(iw-1080)/2:(ih-1080)/2",
+        ])
+        // -ss en input pour couper vite (OK même si on réencode)
         .inputOptions([`-ss ${startSeconds}`])
+        // --- encodage vidéo requis (on ne peut pas copier après un filtre) ---
         .outputOptions([
           `-t ${durationSeconds}`,
-          "-c copy",
-          "-avoid_negative_ts make_zero",
+          "-c:v libx264",
+          "-preset veryfast",
+          "-crf 20",
+          "-movflags +faststart",
+          "-c:a copy", // audio inchangé (pas de filtre audio)
+          "-y",        // overwrite si le fichier existe
         ])
         .output(outputPath)
         .on("end", () => {
-          console.log(
-            `Partie ${i + 1} terminé -> ${path.basename(outputPath)}`
-          );
+          console.log(`Partie ${i + 1} terminé -> ${path.basename(outputPath)}`);
           resolve(outputPath);
         })
         .on("error", (error) => {
-          console.error(`Erreur partie ${i + 1} : `, error.message);
-          reject();
+          console.error(`Erreur partie ${i + 1} : `, error?.message || error);
+          reject(error);
         })
         .run();
     });
@@ -87,7 +95,6 @@ export const CutVideo = async (req: Request, res: Response) => {
     const archive = archiver("zip", { zlib: { level: 1 } });
 
     archive.pipe(outputStream);
-
     archive.glob("*.mp4", { cwd: outputDir });
 
     outputStream.on("close", () => {

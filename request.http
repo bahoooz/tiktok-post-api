@@ -4,7 +4,8 @@ POST https://videoapi.10banc.com/video/tiktok/upload-draft
 Content-Type: application/json
 
 {
-        "video_url": "https://videoapi.10banc.com/media/88f6aea0-17bd-43dc-a9d2-f90553406c9d.mp4"
+        "video_url": "https://videoapi.10banc.com/media/04b072a7-1d1c-409d-a461-c9626e8d9c67.mp4",
+        "operationId": "04b072a7-1d1c-409d-a461-c9626e8d9c67"
 }
 
 ### Test direct post tiktok
@@ -38,6 +39,6 @@ Content-Type: application/json; charset=UTF-8
 
 POST http://localhost:4000/video/generate
 
-###
+### OBTENIR STATUT DE LA VIDEO GENERE
 
-POST https://videoapi.10banc.com/video/status/3a53d72d-80e0-4a1b-a819-407fac92a425
+POST https://videoapi.10banc.com/video/status/04b072a7-1d1c-409d-a461-c9626e8d9c67
