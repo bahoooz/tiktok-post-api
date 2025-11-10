@@ -4,8 +4,8 @@ POST https://videoapi.10banc.com/video/tiktok/upload-draft
 Content-Type: application/json
 
 {
-        "video_url": "https://videoapi.10banc.com/media/04b072a7-1d1c-409d-a461-c9626e8d9c67.mp4",
-        "operationId": "04b072a7-1d1c-409d-a461-c9626e8d9c67"
+        "video_url": "https://videoapi.10banc.com/media/bfbbfb0d-67a1-4619-85d5-d19d6e56e1d4.mp4",
+        "operationId": "bfbbfb0d-67a1-4619-85d5-d19d6e56e1d4"
 }
 
 ### Test direct post tiktok
@@ -39,6 +39,10 @@ Content-Type: application/json; charset=UTF-8
 
 POST http://localhost:4000/video/generate
 
+{
+        "prompt": "une vache qui court dans un lac"
+}
+
 ### OBTENIR STATUT DE LA VIDEO GENERE
 
-POST https://videoapi.10banc.com/video/status/04b072a7-1d1c-409d-a461-c9626e8d9c67
+POST https://videoapi.10banc.com/video/status/ad84b40c-cb44-4265-a1f5-aa1fa3710ca0

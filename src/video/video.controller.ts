@@ -17,7 +17,7 @@ const MEDIA_DIR = path.join(process.cwd(), "media");
 const baseUrl = process.env.API_URL;
 const bucketName = process.env.GCS_BUCKET;
 const projectId = process.env.GCP_ID!;
-const model = "veo-3.0-fast-generate-001";
+const model = "veo-3.1-fast-generate-preview";
 const location = "us-central1";
 const aspectRatio = "9:16";
 
