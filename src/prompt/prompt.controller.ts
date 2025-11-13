@@ -22,6 +22,7 @@ export const getPrompts = async (_req: Request, res: Response) => {
 export const getCurrentPrompt = async (req: Request, res: Response) => {
   try {
     const promptId = Number(req.params.id);
+    console.log("CURRENT PROMPT ID : " + promptId);
 
     const currentFullPrompt = await prisma.prompt.findUnique({
       where: {
