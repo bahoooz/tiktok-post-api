@@ -36,7 +36,7 @@ app.get("/", (_req, res) => {
 
 app.use("/cut", cutRoutes);
 app.use("/video", videoRoutes);
-app.use("/prompt", promptRoutes);
+// app.use("/prompt", promptRoutes);
 app.use("/tiktok", tiktokRoutes);
 
 app.listen(4000, "0.0.0.0", () => {
