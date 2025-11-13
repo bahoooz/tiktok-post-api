@@ -49,11 +49,22 @@ export const updatePrompt = async (req: Request, res: Response) => {
   try {
     const dataPrompt = req.body;
     const promptId = Number(req.params.id);
+    console.log("PROMPT ID : " + promptId);
 
-    console.log(dataPrompt);
+    // console.log(dataPrompt);
 
     let { intro, place, habit, rapText, rapSpeed, animal, instrumentalFlow } =
       dataPrompt;
+
+    console.log(
+      intro,
+      place,
+      habit,
+      rapText,
+      rapSpeed,
+      animal,
+      instrumentalFlow
+    );
 
     intro = intro.trim();
     place = place.trim().toLowerCase();
