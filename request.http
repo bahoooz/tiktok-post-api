@@ -46,3 +46,8 @@ POST http://localhost:4000/video/generate
 ### OBTENIR STATUT DE LA VIDEO GENERE
 
 POST https://videoapi.10banc.com/video/status/ad84b40c-cb44-4265-a1f5-aa1fa3710ca0
+
+
+### TEST GET PROMPTS
+
+GET http://localhost:4000/prompt

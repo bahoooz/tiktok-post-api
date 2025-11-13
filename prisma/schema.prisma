@@ -15,11 +15,19 @@ model Video {
   isPosted    Boolean? @default(false)
   prompt      String
   uri         String?  @unique
-  url_link    String?   @unique
+  url_link    String?  @unique
   createdAt   DateTime @default(now())
 }
 
 model Prompt {
-  id     Int    @id @default(autoincrement())
-  prompt String @default("Crée un concept de mini-vidéo d’horreur fantaisiste (8 s max) avec une créature mythique, bruyante et sombre dans une plaine. Une seule scène simple, ambiance mystérieuse et assez sombre.")
+  id               Int      @id @default(autoincrement())
+  prompt           String
+  intro            String   @default("Génère une grand-mère française de 100 ans")
+  place            String
+  habit            String
+  rapSpeed         String   @default("fastNervous")
+  animal           String?
+  rapText          String
+  instrumentalFlow String   @default("nervous")
+  updatedAt        DateTime @default(now()) @updatedAt
 }

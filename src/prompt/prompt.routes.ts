@@ -1,7 +1,9 @@
 import express from "express";
-import { generatePrompt } from "./prompt.controller.js";
+import { getCurrentPrompt, getPrompts, updatePrompt } from "./prompt.controller.js";
 const router = express.Router();
 
-router.get("/generate", generatePrompt);
+router.get("/", getPrompts);
+router.get("/:id", getCurrentPrompt)
+router.patch("/:id", updatePrompt)
 
 export default router;
