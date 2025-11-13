@@ -25,7 +25,7 @@ const corsOptions: CorsOptions = {
 
 app.use(cors(corsOptions));
 
-app.options("*", cors(corsOptions));
+// app.options("*", cors(corsOptions));
 
 app.use("/media", express.static(path.join(process.cwd(), "media")));
 app.use("/output", express.static(path.join(process.cwd(), "cut", "output")));
