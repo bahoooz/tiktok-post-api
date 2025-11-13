@@ -1,7 +1,7 @@
 import "dotenv/config";
 import "../cron.js";
 import express from "express";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 const app = express();
 const PORT = process.env.PORT || 4000;
 const baseUrl = process.env.API_URL;
@@ -16,17 +16,16 @@ app.use(express.json());
 
 const allowedOrigins = ["https://video.10banc.com", "http://localhost:3000"];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("Origin not allowed by CORS"));
-    },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
+const corsOptions: CorsOptions = {
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
 
 app.use("/media", express.static(path.join(process.cwd(), "media")));
 app.use("/output", express.static(path.join(process.cwd(), "cut", "output")));
