@@ -9,6 +9,7 @@ const baseUrl = process.env.API_URL;
 import videoRoutes from "./video/video.routes.js";
 import promptRoutes from "./prompt/prompt.routes.js";
 import tiktokRoutes from "./tiktok/tiktok.routes.js";
+import manualGenerateToUploadRoutes from "./manual-generate-to-upload/manual-generate-to-upload.routes.js";
 import cutRoutes from "./cut/cut.routes.js";
 import path from "path";
 
@@ -38,6 +39,7 @@ app.use("/cut", cutRoutes);
 app.use("/video", videoRoutes);
 app.use("/prompt", promptRoutes);
 app.use("/tiktok", tiktokRoutes);
+app.use("/generate-to-upload", manualGenerateToUploadRoutes);
 
 app.listen(4000, "0.0.0.0", () => {
   console.log(`Server is running at ${baseUrl}`);
