@@ -3,10 +3,10 @@ import { prisma } from "../lib/prisma.js";
 const baseUrl = process.env.API_URL;
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-export const generateToUpload = async () => {
+export const generateToUpload = async (promptId: number) => {
   try {
     const promptRes = await prisma.prompt.findUnique({
-      where: { id: 2 },
+      where: { id: promptId },
     });
 
     const prompt =
