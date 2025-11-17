@@ -4,9 +4,11 @@ import { generateToUpload } from "../services/generateToUpload.js";
 export const manualGenerateToUpload = async (req: Request, res: Response) => {
   const { promptId } = req.body;
 
-  if (!promptId) return res.status(400).json({error: "promptId manquant"})
+  if (!promptId) return res.status(400).json({ error: "promptId manquant" });
 
-  generateToUpload(promptId).catch((error) => console.error(error));
+  const id = Number(promptId);
+
+  generateToUpload(id).catch((error) => console.error(error));
 
   return res.status(202).json({
     ok: true,
