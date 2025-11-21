@@ -3,12 +3,12 @@ import "../cron.js";
 import express from "express";
 import cors, { CorsOptions } from "cors";
 const app = express();
-const PORT = process.env.PORT || 4000;
 const baseUrl = process.env.API_URL;
 
 import videoRoutes from "./video/video.routes.js";
 import promptRoutes from "./prompt/prompt.routes.js";
 import tiktokRoutes from "./tiktok/tiktok.routes.js";
+import authRoutes from "./auth/auth.routes.js";
 import manualGenerateToUploadRoutes from "./manual-generate-to-upload/manual-generate-to-upload.routes.js";
 import cutRoutes from "./cut/cut.routes.js";
 import path from "path";
@@ -35,11 +35,26 @@ app.get("/", (_req, res) => {
   res.send("<h1>Hello Express</h1>");
 });
 
+// CUT TOOL
 app.use("/cut", cutRoutes);
+
+// GENERATION VIDEO
 app.use("/video", videoRoutes);
+
+// UPDATE PROMPTS
 app.use("/prompt", promptRoutes);
+
+// POST TIKTOK
 app.use("/tiktok", tiktokRoutes);
+
+// GENERATION VIDEO -> POST TIKTOK
 app.use("/generate-to-upload", manualGenerateToUploadRoutes);
+
+// AUTH USERS
+app.use("/auth", authRoutes)
+
+// MANAGE USERS
+app.use("/users", userRoutes)
 
 app.listen(4000, "0.0.0.0", () => {
   console.log(`Server is running at ${baseUrl}`);
