@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Video {
@@ -30,4 +29,41 @@ model Prompt {
   rapText          String
   instrumentalFlow String   @default("nervous")
   updatedAt        DateTime @default(now()) @updatedAt
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  username       String   @unique
+  email          String   @unique
+  avatar         String   @default("https://yt3.googleusercontent.com/9qweSKfHjyIVM8X62WGaqGEYNWgslObShwJ44EmrxZ7x3aMcUddClXrOyE2c0K50gnEKyVGD2kE=s160-c-k-c0x00ffffff-no-rj")
+  hashedPassword String
+  role           Role     @default(MODERATOR)
+  lastActiveAt   DateTime
+  updatedAt      DateTime @default(now()) @updatedAt
+  createdAt      DateTime @default(now())
+
+  // Notes crées par le user
+  createdNotes Note[] @relation("NoteAuthor")
+
+  // Notes où le user est concerné
+  memberOfNotes Note[] @relation("NoteMembers")
+}
+
+model Note {
+  id             Int      @id @default(autoincrement())
+  title          String
+  authorId       Int
+  author         User     @relation("NoteAuthor", fields: [authorId], references: [id])
+  members        User[]   @relation("NoteMembers")
+  emoji          String
+  pin            Boolean
+  mentionMembers Boolean  @default(true)
+  content        Json
+  updatedAt      DateTime @default(now()) @updatedAt
+  createdAt      DateTime @default(now())
+}
+
+enum Role {
+  MODERATOR
+  ADMIN
 }

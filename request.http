@@ -50,4 +50,15 @@ POST https://videoapi.10banc.com/video/status/ad84b40c-cb44-4265-a1f5-aa1fa3710c
 
 ### TEST GET PROMPTS
 
-GET http://localhost:4000/prompt
+GET https://videoapi.10banc.com/prompt
+
+### TEST NOUVELLE ROUTE
+
+POST http://localhost:4000/auth/signup
+Content-Type: application/json
+
+{
+        "username": "pot de colle2",
+        "email": "vin2@kiki.com",
+        "password": "vlonssel2"
+}
