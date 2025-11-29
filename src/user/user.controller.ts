@@ -5,6 +5,7 @@ export const getUsers = async (_req: Request, res: Response) => {
   try {
     const users = await getUsersService();
 
+    console.log(users)
     return res.status(200).json(users);
   } catch (error) {
     console.error(error);
