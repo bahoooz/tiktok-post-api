@@ -22,7 +22,8 @@ const allowedOrigins = [
   "https://video.10banc.com",
   "http://localhost:3000",
   "http://localhost:5173",
-  "http://192.168.1.185:5173"
+  "http://192.168.1.185:5173",
+  "http://192.168.1.175:5173"
 ];
 
 const corsOptions: CorsOptions = {
@@ -61,10 +62,8 @@ app.use("/generate-to-upload", manualGenerateToUploadRoutes);
 // AUTH USERS
 app.use("/auth", authRoutes);
 
-app.use("/users", userRoutes)
-
 // MANAGE USERS
-// app.use("/users", userRoutes)
+app.use("/users", userRoutes)
 
 app.listen(4000, "0.0.0.0", () => {
   console.log(`Server is running at ${baseUrl}`);
