@@ -18,8 +18,11 @@ export const getSpecificUserService = async (username: string) => {
       username,
     },
     select: {
+      id: true,
       username: true,
+      email: true,
       avatar: true,
+      role: true,
     },
   });
 
