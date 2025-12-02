@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   checkGatekeeperService,
+  checkLoginService,
   createUserService,
   getSessionService,
   loginService,
@@ -26,7 +27,9 @@ export const createUser = async (req: Request, res: Response) => {
         error: error.issues[0].message,
       });
 
-    return res.status(500).json({ error: error.message || "Erreur interne du serveur" });
+    return res
+      .status(500)
+      .json({ error: error.message || "Erreur interne du serveur" });
   }
 };
 
@@ -36,11 +39,13 @@ export const login = async (req: Request, res: Response) => {
 
     const { token, user } = await loginService(validatedData);
 
+    const oneDay = 1000 * 60 * 60 * 24;
+
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 3600000,
+      maxAge: oneDay,
     });
 
     return res.status(200).json({
@@ -52,7 +57,13 @@ export const login = async (req: Request, res: Response) => {
     if (error instanceof ZodError)
       return res.status(400).json({ error: error.issues[0].message });
 
-    return res.status(500).json({ error: error.message || "Erreur interne du serveur" });
+    if (error.message === "Identifiants invalides") {
+      return res.status(401).json({ error: "Mot de passe incorrect" });
+    }
+
+    return res
+      .status(500)
+      .json({ error: error.message || "Erreur interne du serveur" });
   }
 };
 
@@ -69,7 +80,9 @@ export const getSession = async (req: AuthRequest, res: Response) => {
       .json({ message: "Session récupéré avec succès", user: userSession });
   } catch (error: any) {
     console.error(error);
-    return res.status(500).json({ error: error.message || "Erreur interne du serveur" });
+    return res
+      .status(500)
+      .json({ error: error.message || "Erreur interne du serveur" });
   }
 };
 
@@ -110,6 +123,21 @@ export const checkGatekeeper = async (req: Request, res: Response) => {
   try {
     checkGatekeeperService(token);
 
+    return res.status(200).json({ authorized: true });
+  } catch (error) {
+    console.error(error);
+    return res.status(401).json({ authorized: false, error: "Token invalide" });
+  }
+};
+
+export const checkLogin = async (req: Request, res: Response) => {
+  const token = req.cookies.authToken;
+
+  if (!token)
+    return res.status(401).json({ authorized: false, error: "Pas de token" });
+
+  try {
+    checkLoginService(token);
     return res.status(200).json({ authorized: true });
   } catch (error) {
     console.error(error);

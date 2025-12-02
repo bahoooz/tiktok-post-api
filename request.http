@@ -58,7 +58,7 @@ POST http://localhost:4000/auth/signup
 Content-Type: application/json
 
 {
-        "username": "pot de colle23",
+        "username": "bahoz2",
         "email": "vin22@kiki.com",
         "password": "vlonssel2"
 }

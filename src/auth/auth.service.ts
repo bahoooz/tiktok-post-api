@@ -80,7 +80,7 @@ export const loginService = async ({ username, password }: TLoginSchema) => {
   };
 
   const token = jwt.sign(payload, JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "1d",
   });
 
   const { hashedPassword, ...userData } = user;
@@ -99,6 +99,7 @@ export const getSessionService = async (userId: number) => {
     select: {
       id: true,
       username: true,
+      avatar: true,
       email: true,
       role: true,
       lastActiveAt: true,
@@ -124,5 +125,13 @@ export const verifyAndTokenGatekeeperService = async (password: string) => {
 };
 
 export const checkGatekeeperService = async (token: string) => {
-  
-}
+  const decoded = jwt.verify(token, JWT_SECRET) as { id: number };
+
+  return decoded;
+};
+
+export const checkLoginService = async (token: string) => {
+  const decoded = jwt.verify(token, JWT_SECRET) as { id: number };
+
+  return decoded;
+};
