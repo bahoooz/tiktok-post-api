@@ -23,7 +23,8 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
   "http://192.168.1.185:5173",
-  "http://192.168.1.175:5173"
+  "http://192.168.1.175:5173",
+  "https://10banc.com"
 ];
 
 const corsOptions: CorsOptions = {
