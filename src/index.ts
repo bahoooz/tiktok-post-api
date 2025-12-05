@@ -1,7 +1,7 @@
 import "dotenv/config";
 // import "../cron.js";
 import express from "express";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 const app = express();
 const baseUrl = process.env.API_URL;
@@ -12,11 +12,12 @@ import tiktokRoutes from "./tiktok/tiktok.routes.js";
 import authRoutes from "./auth/auth.routes.js";
 import manualGenerateToUploadRoutes from "./manual-generate-to-upload/manual-generate-to-upload.routes.js";
 import cutRoutes from "./cut/cut.routes.js";
-import userRoutes from "./user/user.routes.js"
+import userRoutes from "./user/user.routes.js";
+import statsRoutes from "./stats/stats.routes.js";
 import path from "path";
 
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 const allowedOrigins = [
   "https://video.10banc.com",
@@ -25,7 +26,7 @@ const allowedOrigins = [
   "http://192.168.1.185:5173",
   "http://192.168.1.175:5173",
   "https://10banc.com",
-  "https://www.10banc.com"
+  "https://www.10banc.com",
 ];
 
 const corsOptions: CorsOptions = {
@@ -65,7 +66,10 @@ app.use("/generate-to-upload", manualGenerateToUploadRoutes);
 app.use("/auth", authRoutes);
 
 // MANAGE USERS
-app.use("/users", userRoutes)
+app.use("/users", userRoutes);
+
+// GET STATS
+app.use("/stats", statsRoutes);
 
 app.listen(4000, "0.0.0.0", () => {
   console.log(`Server is running at ${baseUrl}`);
