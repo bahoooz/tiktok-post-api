@@ -1,6 +1,7 @@
 import qs from "querystring";
 import fs from "fs";
 import path from "path";
+import { prisma } from "./prisma.js";
 
 const TOKEN_PATH = path.resolve("tiktok_token.json");
 
@@ -52,26 +53,57 @@ async function refreshAccessToken(current: TokenData): Promise<TokenData> {
 }
 
 export async function getTiktokAccessToken(): Promise<string> {
-    const token = loadToken()
-    if (!token) throw new Error("Aucun token TikTok trouvé, fais d'abord /auth/tiktok/callback")
+  const token = loadToken();
+  if (!token)
+    throw new Error(
+      "Aucun token TikTok trouvé, fais d'abord /auth/tiktok/callback"
+    );
 
-    if (Date.now() > token.expires_at - 2 * 60 * 1000) {
-        const refreshed = await refreshAccessToken(token)
-        return refreshed.access_token
-    }
+  if (Date.now() > token.expires_at - 2 * 60 * 1000) {
+    const refreshed = await refreshAccessToken(token);
+    return refreshed.access_token;
+  }
 
-    return token.access_token
+  return token.access_token;
 }
 
-export function saveInitialOAuthTokens(oauthData: any) {
-    const expires_at = Date.now() + oauthData.expires_in * 1000
+export async function saveInitialOAuthTokens(data: any) {
+  try {
+    const savedAccount = await prisma.tikTokAccount.upsert({
+      where: { openId: data.open_id },
+      update: {
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token,
+        expiresIn: data.expires_in,
+        // On rafraîchit les infos de profil
+        displayName: data.display_name,
+        avatarUrl: data.avatar_url,
+        followerCount: data.follower_count || 0,
+        videoCount: data.video_count || 0,
+        updatedAt: new Date(), // Optionnel si @updatedAt est géré par Prisma
+      },
+      create: {
+        openId: data.open_id,
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token,
+        expiresIn: data.expires_in,
+        displayName: data.display_name,
+        avatarUrl: data.avatar_url,
+        username: data.display_name, // Fallback car le vrai username est parfois masqué par l'API
+        followerCount: data.follower_count || 0,
+        videoCount: data.video_count || 0,
+      },
+    });
 
-    const newData: TokenData = {
-        access_token: oauthData.access_token,
-        refresh_token: oauthData.refresh_token,
-        expires_at
-    }
-
-    saveToken(newData)
-    console.log("💾 Token TikTok initial sauvegardé !")
+    console.log(
+      `💾 Compte TikTok "${savedAccount.displayName}" sauvegardé en BDD !`
+    );
+    return savedAccount;
+  } catch (error) {
+    console.error(
+      "❌ Erreur critique lors de la sauvegarde TikTok dans Prisma:",
+      error
+    );
+    throw error;
+  }
 }

@@ -58,7 +58,7 @@ app.use("/video", videoRoutes);
 app.use("/prompt", promptRoutes);
 
 // ROUTES TIKTOK
-// app.use("/tiktok", tiktokRoutes);
+app.use("/tiktok", tiktokRoutes);
 
 // ROUTES YOUTUBE
 app.use("/youtube", youtubeRoutes);

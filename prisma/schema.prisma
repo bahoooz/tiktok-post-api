@@ -64,38 +64,65 @@ model Note {
 }
 
 model YouTubeChannel {
-  id           String   @id @default(uuid())
-  
-  // IDENTIFICATION YOUTUBE 
-  channelId    String   @unique              
-  
-  // --- INFOS D'AFFICHAGE ---
-  title        String?                       
-  description  String?                       
-  avatar String?                       
-  customUrl    String?                       
-  
-  // --- SÉCURITÉ (LE COEUR DU SYSTÈME) ---
-  refreshToken String                        
-  
-  // --- META DONNÉES ---
-  createdAt    DateTime @default(now())      
-  updatedAt    DateTime @updatedAt           
+  id String @id @default(uuid())
 
-  stats        DailyStat[]
+  // IDENTIFICATION YOUTUBE 
+  channelId String @unique
+
+  // --- INFOS D'AFFICHAGE ---
+  title       String?
+  description String?
+  avatar      String?
+  customUrl   String?
+
+  // --- SÉCURITÉ (LE COEUR DU SYSTÈME) ---
+  refreshToken String
+
+  // --- META DONNÉES ---
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stats DailyStat[]
 }
 
 model DailyStat {
-  id             String         @id @default(uuid())
-  date           DateTime
-  views          Int            @default(0)
-  subscribers    Int            @default(0)
-  
+  id          String   @id @default(uuid())
+  date        DateTime
+  views       Int      @default(0)
+  subscribers Int      @default(0)
+
   // Clé étrangère
-  channelId      String
-  channel        YouTubeChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId String
+  channel   YouTubeChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
   @@unique([channelId, date])
+}
+
+model TikTokAccount {
+  // --- ID INTERNE ---
+  id String @id @default(uuid())
+
+  // --- ID TIKTOK (Clé unique pour l'upsert) ---
+  openId String @unique
+
+  // --- INFOS PROFIL ---
+  username    String? // Le @pseudo (souvent masqué par l'API V2, on stocke le display name en fallback)
+  displayName String? // Le nom affiché (ex: "10banc Officiel")
+  avatarUrl   String? // L'image de profil
+
+  // --- TOKENS (SÉCURITÉ) ---
+  accessToken  String // Expire en 24h
+  refreshToken String // Expire en 1 an (sauf rotation)
+  expiresIn    Int // Durée de validité en secondes (souvent 86400)
+
+  // --- STATS (Snapshots) ---
+  followerCount Int @default(0)
+  videoCount    Int @default(0)
+  likesCount    Int @default(0) // On le met par défaut à 0, même si on ne le récupère pas tout de suite
+
+  // --- DATES ---
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt // Se met à jour tout seul quand tu fais l'upsert
 }
 
 enum Role {

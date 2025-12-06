@@ -1,15 +1,18 @@
 import express from "express";
 import {
-  uploadDirectPostFromUrl,
+  listConnectedAccounts,
+  startTiktokLogin,
+  tiktokCallback,
   uploadDraftFromUrl,
 } from "./tiktok.controller.js";
 
 const router = express.Router();
 
-// OAUTH
-router.get("/auth");
+router.get("/auth/login", startTiktokLogin);
+router.get("/auth/callback", tiktokCallback);
+
+router.get("/accounts", listConnectedAccounts);
 
 router.post("/upload-draft", uploadDraftFromUrl);
-router.post("/direct-post", uploadDirectPostFromUrl);
 
 export default router;

@@ -1,96 +1,94 @@
 import { Request, Response } from "express";
-
-let accessToken: string | null = null;
+import { saveInitialOAuthTokens } from "../lib/tiktokAuth.js";
+import qs from "querystring";
+import {
+  startTiktokLoginService,
+  tiktokCallbackService,
+  uploadDraftFromUrlService,
+} from "./tiktok.service.js";
+import { prisma } from "../lib/prisma.js";
 
 export const uploadDraftFromUrl = async (req: Request, res: Response) => {
   try {
-    if (!accessToken)
-      return res.status(401).json({ error: "Not connected to Tiktok" });
-    const { video_url } = req.body;
+    const { video_url, openId } = req.body;
+
     if (!video_url) {
-      console.log("Body reçu:", req.body); // debug
-      return res.status(400).json({ error: "Missing videoUrl" });
+      return res.status(400).json({ error: "Missing video_url" });
     }
 
-    const r = await fetch(
-      "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json; charset=UTF-8",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          source_info: {
-            source: "PULL_FROM_URL",
-            video_url,
-          },
-        }),
-      }
-    );
-    const ct = r.headers.get("content-type") || "";
-    const raw = await r.text();
-    if (!ct.includes("application/json")) {
-      // TikTok a renvoyé une page HTML (404/403...) → renvoyer l’aperçu pour debug
-      return res.status(r.status).json({
-        error: "Non-JSON from TikTok",
-        status: r.status,
-        bodyPreview: raw.slice(0, 600),
+    if (!openId) {
+      return res.status(400).json({
+        error: "Missing openId. Veuillez préciser sur quel compte uploader.",
       });
     }
-    const data = JSON.parse(raw);
-    if (!r.ok) {
-      console.error("TikTok draft init error:", data);
-      return res.status(r.status).json(data);
+
+    const account = await prisma.tikTokAccount.findUnique({
+      where: { openId: openId },
+    });
+
+    if (!account || !account.accessToken) {
+      return res.status(404).json({
+        error: "Compte TikTok introuvable ou non connecté.",
+      });
     }
-    return res.json({ ok: true, step: "inbox_init", data });
+
+    const dataVideo = await uploadDraftFromUrlService({
+      accessToken: account.accessToken,
+      video_url,
+    });
+
+    return res.json({
+      ok: true,
+      step: "inbox_init",
+      account: account.displayName,
+      data: dataVideo,
+    });
   } catch (error: any) {
-    console.error(error);
+    console.error("Erreur Upload TikTok:", error);
     return res.status(500).json({ error: error?.message ?? "server_error" });
   }
 };
 
-export const uploadDirectPostFromUrl = async (req: Request, res: Response) => {
+export const listConnectedAccounts = async (_req: Request, res: Response) => {
   try {
-    if (!accessToken)
-      return res.status(401).json({ error: "Not connected to Tiktok" });
+    const accounts = await prisma.tikTokAccount.findMany({
+      select: {
+        openId: true, // L'ID à renvoyer lors de l'upload
+        displayName: true, // Le nom à afficher sur le bouton
+        avatarUrl: true, // L'image pour faire joli
+        followerCount: true,
+        updatedAt: true,
+      },
+      orderBy: { updatedAt: "desc" },
+    });
 
-    const { video_url } = req.body;
-
-    if (!video_url) {
-      console.log("Body reçu:", req.body); // debug
-      return res.status(400).json({ error: "Missing videoUrl" });
-    }
-
-    const r = await fetch(
-      "https://open.tiktokapis.com/v2/post/publish/video/init/",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json; charset=UTF-8",
-        },
-        body: JSON.stringify({
-          post_info: {
-            title: "C'est bientôt halloween #fyp #pourtoi",
-            privacy_level: "SELF_ONLY",
-            is_aigc: true,
-            video_cover_timestamp_ms: 1000,
-            brand_content_toggle: false,
-            brand_organic_toggle: false,
-          },
-          source_info: {
-            source: "PULL_FROM_URL",
-            video_url,
-          },
-        }),
-      }
-    );
-    const data = await r.json();
-    res.status(200).json({ message: "ça a marché : ", data });
-  } catch (error: any) {
+    res.json({
+      success: true,
+      count: accounts.length,
+      accounts: accounts,
+    });
+  } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: error?.message ?? "server_error" });
+    res.status(500).json({ error: "Impossible de lister les comptes" });
+  }
+};
+
+export const startTiktokLogin = async (_req: Request, res: Response) => {
+  const params = await startTiktokLoginService();
+
+  res.redirect(`https://www.tiktok.com/v2/auth/authorize/?${params}`);
+};
+
+export const tiktokCallback = async (req: Request, res: Response) => {
+  const code = req.query.code as string;
+  if (!code) return res.status(400).send("Missing code parameter");
+
+  try {
+    const account = await tiktokCallbackService(code);
+    console.log(`✅ TikTok connecté : ${account.displayName}`);
+    res.redirect("https://10banc.com/success-token");
+  } catch (error: any) {
+    console.error("❌ Erreur Callback:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
