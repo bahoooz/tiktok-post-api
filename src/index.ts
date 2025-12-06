@@ -61,7 +61,7 @@ app.use("/prompt", promptRoutes);
 // app.use("/tiktok", tiktokRoutes);
 
 // ROUTES YOUTUBE
-app.use("/youtube", youtubeRoutes);
+// app.use("/youtube", youtubeRoutes);
 
 // GENERATION VIDEO -> POST TIKTOK
 app.use("/generate-to-upload", manualGenerateToUploadRoutes);
