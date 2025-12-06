@@ -77,7 +77,6 @@ model YouTubeChannel {
   
   // --- SÉCURITÉ (LE COEUR DU SYSTÈME) ---
   refreshToken String                        
-                                             
   
   // --- META DONNÉES ---
   createdAt    DateTime @default(now())      
