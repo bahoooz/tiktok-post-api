@@ -9,6 +9,7 @@ const baseUrl = process.env.API_URL;
 import videoRoutes from "./video/video.routes.js";
 import promptRoutes from "./prompt/prompt.routes.js";
 import tiktokRoutes from "./tiktok/tiktok.routes.js";
+import youtubeRoutes from "./youtube/youtube.routes.js";
 import authRoutes from "./auth/auth.routes.js";
 import manualGenerateToUploadRoutes from "./manual-generate-to-upload/manual-generate-to-upload.routes.js";
 import cutRoutes from "./cut/cut.routes.js";
@@ -56,8 +57,11 @@ app.use("/video", videoRoutes);
 // UPDATE PROMPTS
 app.use("/prompt", promptRoutes);
 
-// POST TIKTOK
-app.use("/tiktok", tiktokRoutes);
+// ROUTES TIKTOK
+// app.use("/tiktok", tiktokRoutes);
+
+// ROUTES YOUTUBE
+app.use("/youtube", youtubeRoutes);
 
 // GENERATION VIDEO -> POST TIKTOK
 app.use("/generate-to-upload", manualGenerateToUploadRoutes);

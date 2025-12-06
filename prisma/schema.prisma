@@ -63,6 +63,42 @@ model Note {
   createdAt      DateTime @default(now())
 }
 
+model YouTubeChannel {
+  id           String   @id @default(uuid())
+  
+  // IDENTIFICATION YOUTUBE 
+  channelId    String   @unique              
+  
+  // --- INFOS D'AFFICHAGE ---
+  title        String?                       
+  description  String?                       
+  avatar String?                       
+  customUrl    String?                       
+  
+  // --- SÉCURITÉ (LE COEUR DU SYSTÈME) ---
+  refreshToken String                        
+                                             
+  
+  // --- META DONNÉES ---
+  createdAt    DateTime @default(now())      
+  updatedAt    DateTime @updatedAt           
+
+  stats        DailyStat[]
+}
+
+model DailyStat {
+  id             String         @id @default(uuid())
+  date           DateTime
+  views          Int            @default(0)
+  subscribers    Int            @default(0)
+  
+  // Clé étrangère
+  channelId      String
+  channel        YouTubeChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([channelId, date])
+}
+
 enum Role {
   MODERATOR
   ADMIN
