@@ -55,7 +55,7 @@ export const handleAuthCallback = async (code: string) => {
     dataToUpdate.refreshToken = tokens.refresh_token;
   }
 
-  const savedChannel = await prisma.youTubeChannel.upsert({
+  const savedChannel = await prisma.youTubeAccount.upsert({
     where: { channelId: channelId },
     update: dataToUpdate,
     create: {

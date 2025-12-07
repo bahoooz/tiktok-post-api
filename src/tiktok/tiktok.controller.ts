@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import { saveInitialOAuthTokens } from "../lib/tiktokAuth.js";
-import qs from "querystring";
 import {
   startTiktokLoginService,
   tiktokCallbackService,
@@ -55,8 +53,7 @@ export const listConnectedAccounts = async (_req: Request, res: Response) => {
       select: {
         openId: true, // L'ID à renvoyer lors de l'upload
         displayName: true, // Le nom à afficher sur le bouton
-        avatarUrl: true, // L'image pour faire joli
-        followerCount: true,
+        avatar: true, // L'image pour faire joli
         updatedAt: true,
       },
       orderBy: { updatedAt: "desc" },

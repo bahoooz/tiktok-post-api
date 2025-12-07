@@ -75,12 +75,8 @@ export async function saveInitialOAuthTokens(data: any) {
         accessToken: data.access_token,
         refreshToken: data.refresh_token,
         expiresIn: data.expires_in,
-        // On rafraîchit les infos de profil
         displayName: data.display_name,
-        avatarUrl: data.avatar_url,
-        followerCount: data.follower_count || 0,
-        videoCount: data.video_count || 0,
-        updatedAt: new Date(), // Optionnel si @updatedAt est géré par Prisma
+        avatar: data.avatar_url,
       },
       create: {
         openId: data.open_id,
@@ -88,10 +84,7 @@ export async function saveInitialOAuthTokens(data: any) {
         refreshToken: data.refresh_token,
         expiresIn: data.expires_in,
         displayName: data.display_name,
-        avatarUrl: data.avatar_url,
-        username: data.display_name, // Fallback car le vrai username est parfois masqué par l'API
-        followerCount: data.follower_count || 0,
-        videoCount: data.video_count || 0,
+        avatar: data.avatar_url,
       },
     });
 

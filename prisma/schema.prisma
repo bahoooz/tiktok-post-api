@@ -41,12 +41,8 @@ model User {
   lastActiveAt   DateTime
   updatedAt      DateTime @default(now()) @updatedAt
   createdAt      DateTime @default(now())
-
-  // Notes crées par le user
-  createdNotes Note[] @relation("NoteAuthor")
-
-  // Notes où le user est concerné
-  memberOfNotes Note[] @relation("NoteMembers")
+  createdNotes Note[] @relation("NoteAuthor") // Notes crées par le user
+  memberOfNotes Note[] @relation("NoteMembers") // Notes où le user est concerné
 }
 
 model Note {
@@ -63,66 +59,47 @@ model Note {
   createdAt      DateTime @default(now())
 }
 
-model YouTubeChannel {
-  id String @id @default(uuid())
-
-  // IDENTIFICATION YOUTUBE 
-  channelId String @unique
-
-  // --- INFOS D'AFFICHAGE ---
-  title       String?
-  description String?
-  avatar      String?
-  customUrl   String?
-
-  // --- SÉCURITÉ (LE COEUR DU SYSTÈME) ---
-  refreshToken String
-
-  // --- META DONNÉES ---
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  stats DailyStat[]
-}
-
-model DailyStat {
-  id          String   @id @default(uuid())
-  date        DateTime
-  views       Int      @default(0)
-  subscribers Int      @default(0)
-
-  // Clé étrangère
-  channelId String
-  channel   YouTubeChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
-
-  @@unique([channelId, date])
+model YouTubeAccount {
+  id           String      @id @default(uuid())
+  channelId    String      @unique // youtube ID
+  title        String?
+  description  String?
+  avatar       String?
+  customUrl    String?
+  refreshToken String // Auth
+  stats        DailyStat[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model TikTokAccount {
-  // --- ID INTERNE ---
-  id String @id @default(uuid())
-
-  // --- ID TIKTOK (Clé unique pour l'upsert) ---
-  openId String @unique
-
-  // --- INFOS PROFIL ---
-  username    String? // Le @pseudo (souvent masqué par l'API V2, on stocke le display name en fallback)
-  displayName String? // Le nom affiché (ex: "10banc Officiel")
-  avatarUrl   String? // L'image de profil
-
-  // --- TOKENS (SÉCURITÉ) ---
+  id           String      @id @default(uuid())
+  openId       String      @unique // id tiktok
+  username     String?
+  displayName  String?
+  avatar       String?
   accessToken  String // Expire en 24h
-  refreshToken String // Expire en 1 an (sauf rotation)
-  expiresIn    Int // Durée de validité en secondes (souvent 86400)
+  refreshToken String // Expire en 1 an
+  expiresIn    Int // Durée de validité en secondes (souvent 86400 -> 24h)
+  stats        DailyStat[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
 
-  // --- STATS (Snapshots) ---
-  followerCount Int @default(0)
-  videoCount    Int @default(0)
-  likesCount    Int @default(0) // On le met par défaut à 0, même si on ne le récupère pas tout de suite
-
-  // --- DATES ---
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt // Se met à jour tout seul quand tu fais l'upsert
+model DailyStat {
+  id        String   @id @default(uuid())
+  date      DateTime
+  views     Int      @default(0)
+  followers Int      @default(0)
+  likes     Int      @default(0)
+  comments  Int?     @default(0)
+  shares    Int?     @default(0)
+  youtubeAccountId String?
+  youtubeAccount   YouTubeAccount? @relation(fields: [youtubeAccountId], references: [id], onDelete: Cascade)
+  tikTokAccountId  String?
+  tikTokAccount    TikTokAccount?  @relation(fields: [tikTokAccountId], references: [id], onDelete: Cascade)
+  @@unique([youtubeAccountId, date])
+  @@unique([tikTokAccountId, date])
 }
 
 enum Role {
