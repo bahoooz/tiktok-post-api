@@ -50,11 +50,11 @@ export const startTiktokLoginService = async () => {
 
 export const tiktokCallbackService = async (code: string) => {
   const body = qs.stringify({
-    client_key: TIKTOK_CONFIG.CLIENT_KEY,
-    client_secret: TIKTOK_CONFIG.CLIENT_SECRET,
+    client_key: process.env.TIKTOK_CLIENT_KEY,
+    client_secret: process.env.TIKTOK_CLIENT_SECRET,
     code,
     grant_type: "authorization_code",
-    redirect_uri: TIKTOK_CONFIG.REDIRECT_URI,
+    redirect_uri: process.env.TIKTOK_REDIRECT_URI,
   });
 
   const resToken = await fetch("https://open.tiktokapis.com/v2/oauth/token/", {
